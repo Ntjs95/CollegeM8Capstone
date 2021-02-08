@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/CollegeM8/Properties/launchSettings.json
+/CollegeM8/appsettings.Development.json
+/CollegeM8/appsettings.json
