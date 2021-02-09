@@ -24,11 +24,13 @@ namespace CollegeM8
                 login.AccountCreatedDate = DateTime.Now;
                 login.UserId = guid;
                 login.Username = user.Username;
-                login.Password = user.Password;
-
+                // Hash Password
+                login.Password = PasswordHash.Hash(user.Password);
+                user.Password = null;
                 _db.Users.Add(user);
                 _db.Logins.Add(login);
                 _db.SaveChanges();
+                
 
             }
             else throw new ServiceException("User Already Exists");
@@ -37,12 +39,7 @@ namespace CollegeM8
 
         public User GetUser(string id)
         {
-            User user;
-            user = _db.Users.FirstOrDefault(u => u.UserId == id);
-            if (user == null)
-            {
-                throw new ServiceException("User Does Not Exist");
-            }
+            User user = _db.Users.FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
             return user;
         }
 
@@ -51,28 +48,37 @@ namespace CollegeM8
             User existingUser = _db.Users.FirstOrDefault(u => u.UserId == user.UserId);
             existingUser.EmailAddress = user.EmailAddress;
             _db.Users.Update(existingUser);
-
-            if (!string.IsNullOrEmpty(user.Password))
-            {
-                Login existingLogin = _db.Logins.FirstOrDefault(l => l.Username == user.Username);
-                existingLogin.Password = user.Password;
-                _db.Update(existingLogin);
-            }
-
             _db.SaveChanges();
             return GetUser(user.UserId);
         }
 
         public User Login(Login login)
         {
-            Login loginfound = _db.Logins.FirstOrDefault(l => l.Username == login.Username && l.Password == login.Password);
-            if (loginfound != null && login.Password == loginfound.Password) // Must check password because LINQ is not case sensitive.
+            Login loginfound = _db.Logins.FirstOrDefault(l => l.Username == login.Username);
+            if (loginfound != null && PasswordHash.Verify(login.Password, loginfound.Password))
             {
                 return GetUser(loginfound.UserId);
             }
             else
             {
                 throw new ServiceException("Login attempt failed.");
+            }
+        }
+        
+        public User ChangePassword(ChangePassword loginChangePw)
+        {
+            Login loginfound = _db.Logins.FirstOrDefault(l => l.Username == loginChangePw.Username);
+            if (loginfound != null && PasswordHash.Verify(loginChangePw.OldPassword, loginfound.Password))
+            {
+                string newPass = PasswordHash.Hash(loginChangePw.NewPassword);
+                loginfound.Password = newPass;
+                _db.Logins.Update(loginfound);
+                _db.SaveChanges();
+                return GetUser(loginfound.UserId);
+            }
+            else
+            {
+                throw new ServiceException("Password Not Changed.");
             }
         }
     }

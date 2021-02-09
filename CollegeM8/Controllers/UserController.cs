@@ -45,9 +45,9 @@ namespace CollegeM8
             {
                 return BadRequest(e.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest("Error creating user. Check logs for details.");
+                return BadRequest("Error creating user. Check logs for details. " + e.Message);
             }
         }
 
@@ -76,6 +76,24 @@ namespace CollegeM8
             try
             {
                 return Ok(_userLogic.Login(login));
+            }
+            catch (ServiceException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Login Error. Check logs for details.");
+            }
+        }
+        
+        // POST api/User
+        [HttpPost("changepassword")]
+        public IActionResult PostChangePassword([FromBody] ChangePassword login)
+        {
+            try
+            {
+                return Ok(_userLogic.ChangePassword(login));
             }
             catch (ServiceException e)
             {

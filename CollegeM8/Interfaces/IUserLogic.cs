@@ -11,5 +11,6 @@ namespace CollegeM8
         public User GetUser(string id);
         public User UpdateUser(User user);
         public User Login(Login login);
+        public User ChangePassword(ChangePassword login);
     }
 }
