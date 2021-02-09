@@ -26,6 +26,7 @@ namespace CollegeM8
                 login.Username = user.Username;
                 // Hash Password
                 login.Password = PasswordHash.Hash(user.Password);
+                login.PasswordLastChangedDate = DateTime.Now;
                 user.Password = null;
                 _db.Users.Add(user);
                 _db.Logins.Add(login);
@@ -45,7 +46,12 @@ namespace CollegeM8
 
         public User UpdateUser(User user)
         {
-            User existingUser = _db.Users.FirstOrDefault(u => u.UserId == user.UserId);
+            User existingUser = _db.Users.FirstOrDefault(u => u.UserId == user.UserId) ?? throw new ServiceException("Could not find user.");
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.SchoolName = user.SchoolName;
+            existingUser.ProgramName = user.ProgramName;
+            existingUser.BirthDate = user.BirthDate;
             existingUser.EmailAddress = user.EmailAddress;
             _db.Users.Update(existingUser);
             _db.SaveChanges();
@@ -72,6 +78,7 @@ namespace CollegeM8
             {
                 string newPass = PasswordHash.Hash(loginChangePw.NewPassword);
                 loginfound.Password = newPass;
+                loginfound.PasswordLastChangedDate = DateTime.Now;
                 _db.Logins.Update(loginfound);
                 _db.SaveChanges();
                 return GetUser(loginfound.UserId);

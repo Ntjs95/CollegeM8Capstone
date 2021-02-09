@@ -16,6 +16,11 @@ namespace CollegeM8
         public string Username { get; set; }
         [NotMapped]
         public string Password { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string SchoolName { get; set; }
+        public string ProgramName { get; set; }
         public string EmailAddress { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

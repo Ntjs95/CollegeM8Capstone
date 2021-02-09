@@ -13,5 +13,6 @@ namespace CollegeM8
         public string UserId { get; set; }
         public string Password { get; set; }
         public DateTime AccountCreatedDate { get; set; }
+        public DateTime PasswordLastChangedDate { get; set; }
     }
 }
