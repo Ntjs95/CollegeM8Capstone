@@ -8,6 +8,7 @@ namespace CollegeM8
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/json")]
     public class UserController : ControllerBase
     {
         private IUserLogic _userLogic;

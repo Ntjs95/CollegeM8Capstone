@@ -16,6 +16,7 @@ namespace CollegeM8
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,6 +27,15 @@ namespace CollegeM8
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("*");
+                                      builder.WithHeaders("Content-Type");
+                                  });
+            });
             services.AddControllers();
             services.AddMvc();
             services.AddDbContext<CollegeM8Context>(item => item.UseSqlServer(Configuration.GetConnectionString("constr")));
@@ -44,6 +54,8 @@ namespace CollegeM8
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

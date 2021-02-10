@@ -9,6 +9,7 @@ namespace CollegeM8.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/json")]
     public class EventController : ControllerBase
     {
         private IEventLogic _eventLogic;
