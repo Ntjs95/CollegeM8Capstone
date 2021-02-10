@@ -37,7 +37,10 @@ namespace CollegeM8
                                   });
             });
             services.AddControllers();
-            services.AddMvc();
+            services.AddMvc()
+             .AddJsonOptions(options => {
+                 options.JsonSerializerOptions.IgnoreNullValues = true;
+             });
             services.AddDbContext<CollegeM8Context>(item => item.UseSqlServer(Configuration.GetConnectionString("constr")));
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEventLogic, EventLogic>();
