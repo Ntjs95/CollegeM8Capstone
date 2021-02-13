@@ -7,6 +7,6 @@ namespace CollegeM8
 {
     public interface ISchedule
     {
-        List<ScheduleItem> GenerateSchedule(string userId, DateTime startDate, DateTime endDate);
+        Schedule GenerateSchedule(Schedule schedule);
     }
 }

@@ -38,13 +38,16 @@ namespace CollegeM8
             });
             services.AddControllers();
             services.AddMvc()
-             .AddJsonOptions(options => {
+             .AddJsonOptions(options =>
+             {
                  options.JsonSerializerOptions.IgnoreNullValues = true;
              });
             services.AddDbContext<CollegeM8Context>(item => item.UseSqlServer(Configuration.GetConnectionString("constr")));
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEventLogic, EventLogic>();
-        }
+            services.AddScoped<ISleepLogic, SleepLogic>();
+            services.AddScoped<ISchedule, ScheduleService>();
+        } 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

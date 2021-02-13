@@ -14,23 +14,24 @@ namespace CollegeM8
             _db = db;
         }
 
-        public List<ScheduleItem> GenerateSchedule(string userId, DateTime startDate, DateTime endDate)
+        public Schedule GenerateSchedule(Schedule scheduleRequest)
         {
-            if (startDate > endDate || !_db.Users.AsNoTracking().Any(u => u.UserId == userId))
+            if (scheduleRequest.startDate > scheduleRequest.endDate || !_db.Users.AsNoTracking().Any(u => u.UserId == scheduleRequest.userId))
             {
                 throw new ServiceException("Data invalid to create schedule.");
             }
-            List<ScheduleItem> schedule = new List<ScheduleItem>();
-            Sleep sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == userId);
+            List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
+            Sleep sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == scheduleRequest.userId);
 
-            while (startDate <= endDate)
+            while (scheduleRequest.startDate <= scheduleRequest.endDate)
             {
-                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(userId, startDate, sleep);
-
-
-                startDate = startDate.AddDays(1);
+                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, sleep);
+                scheduleItems.Add(sleepItem);
+                scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1);
             }
-
+            Schedule schedule = new Schedule();
+            schedule.userId = scheduleRequest.userId;
+            schedule.schedule = scheduleItems;
             return schedule;
         }
     }
