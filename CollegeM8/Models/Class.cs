@@ -24,6 +24,5 @@ namespace CollegeM8
         public bool Satday { get; set; }
         public bool Sunday { get; set; }
 
-
     }
 }

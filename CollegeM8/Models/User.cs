@@ -22,5 +22,6 @@ namespace CollegeM8
         public string ProgramName { get; set; }
         public string EmailAddress { get; set; }
         public DateTime BirthDate { get; set; }
+
     }
 }
