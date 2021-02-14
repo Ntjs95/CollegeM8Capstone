@@ -22,11 +22,11 @@ namespace CollegeM8
             }
             List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
             Sleep sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == scheduleRequest.userId);
-            List<Term> terms = _db.Term.AsNoTracking().Where(t => t.UserId == scheduleRequest.userId).Where(t => (scheduleRequest.startDate >= t.StartDate && scheduleRequest.startDate <= t.EndDate) ||
+            Term[] terms = _db.Term.AsNoTracking().Where(t => t.UserId == scheduleRequest.userId).Where(t => (scheduleRequest.startDate >= t.StartDate && scheduleRequest.startDate <= t.EndDate) ||
             (scheduleRequest.endDate <= t.EndDate && scheduleRequest.endDate >= t.StartDate) ||
-            (scheduleRequest.startDate <= t.StartDate && scheduleRequest.endDate >= t.EndDate)).ToList();
+            (scheduleRequest.startDate <= t.StartDate && scheduleRequest.endDate >= t.EndDate)).ToArray();
             HashSet<string> termIdVault = Term.GenerateIdVault(terms);
-            List<Class> classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToList();
+            Class[] classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToArray();
 
             while (scheduleRequest.startDate <= scheduleRequest.endDate) // Per Day
             {
@@ -34,8 +34,20 @@ namespace CollegeM8
                 ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, sleep);
                 scheduleItems.Add(sleepItem);
                 // Add Classes
-                List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, terms, classes);
-                scheduleItems.AddRange(classItems);
+                Term term = terms.FirstOrDefault(t => t.StartDate <= scheduleRequest.startDate && scheduleRequest.startDate <= t.EndDate); // Choose term that we are in today
+                if (term != null)
+                {
+                    Class[] dayOfWeekClasses = classes.Where(c => c.TermId == term.TermId && c.IsSchoolDay(scheduleRequest.startDate.DayOfWeek)).ToArray(); // Choose classes on this day of the week in this term
+                    if (dayOfWeekClasses == null || dayOfWeekClasses.Length == 0)
+                    {
+                        List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, dayOfWeekClasses);
+                        if (classItems != null)
+                        {
+                            scheduleItems.AddRange(classItems);
+                        }
+                    }
+                }
+                
 
                 scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1);
             }

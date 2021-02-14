@@ -32,26 +32,20 @@ namespace CollegeM8
             return sleepItem;
         }
         
-        internal static List<ScheduleItem> CreateClassScheduleItem(string userId,DateTime date, List<Term> terms, List<Class> classes)
+        internal static List<ScheduleItem> CreateClassScheduleItem(string userId,DateTime date, Class[] classesToday)
         {
+
             List<ScheduleItem> items = new List<ScheduleItem>();
-            foreach (Class _class in classes)
+            foreach (Class _class in classesToday)
             {
-                if (_class.IsSchoolDay(date.DayOfWeek))
-                {
-                    Term term = terms.FirstOrDefault(t => t.TermId == _class.TermId);
-                    if(date <= term.EndDate && date >= term.StartDate)
-                    {
-                        ScheduleItem classItem = new ScheduleItem();
-                        classItem.UserId = userId;
-                        classItem.ScheduleItemId = Guid.NewGuid().ToString();
-                        classItem.Title = $"{_class.CourseCode} - {_class.ClassName}";
-                        classItem.StartTime = CombineDateTime(date, _class.StartTime);
-                        classItem.EndTime = CombineDateTime(date, _class.EndTime);
-                        items.Add(classItem);
-                    }
-                }
-                
+                ScheduleItem classItem = new ScheduleItem();
+                classItem.UserId = userId;
+                classItem.ScheduleItemId = Guid.NewGuid().ToString();
+                classItem.Title = $"{_class.CourseCode} - {_class.ClassName}";
+                classItem.StartTime = CombineDateTime(date, _class.StartTime);
+                classItem.EndTime = CombineDateTime(date, _class.EndTime);
+                items.Add(classItem);
+
             }
             if(items.Count > 0)
             {
