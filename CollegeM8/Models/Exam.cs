@@ -13,7 +13,6 @@ namespace CollegeM8
         public string ClassId { get; set; }
         public string TermId { get; set; }
         public string UserId { get; set; }
-        public DateTime Date { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
     }

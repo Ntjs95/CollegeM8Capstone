@@ -44,9 +44,10 @@ namespace CollegeM8
              });
             services.AddDbContext<CollegeM8Context>(item => item.UseSqlServer(Configuration.GetConnectionString("constr")));
             services.AddScoped<IUserLogic, UserLogic>();
-            services.AddScoped<IEventLogic, EventLogic>();
             services.AddScoped<ISleepLogic, SleepLogic>();
             services.AddScoped<ISchedule, ScheduleService>();
+            services.AddScoped<IScheduleItem, ScheduleItemLogic>();
+            services.AddScoped<IClass, ClassLogic>();
         } 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

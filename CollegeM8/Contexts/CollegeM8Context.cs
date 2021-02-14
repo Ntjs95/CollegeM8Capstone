@@ -14,7 +14,6 @@ namespace CollegeM8
 
         }
         public DbSet<User> Users { get; set; } // Table
-        public DbSet<Event> Events { get; set; } // Table
         public DbSet<Login> Logins { get; set; } // Table
         public DbSet<Assignment> Assignments { get; set; } // Table
         public DbSet<Class> Classes { get; set; } // Table

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace CollegeM8
 
         public User GetUser(string id)
         {
-            User user = _db.Users.FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
+            User user = _db.Users.AsNoTracking().FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
             return user;
         }
 

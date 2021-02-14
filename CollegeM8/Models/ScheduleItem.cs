@@ -21,15 +21,48 @@ namespace CollegeM8
             sleepItem.Title = Sleep.SCHED_ITEM_TITLE;
             if (wakeDate.DayOfWeek == DayOfWeek.Saturday || wakeDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                sleepItem.EndTime = new DateTime(year: wakeDate.Year, month: wakeDate.Month, day: wakeDate.Day, hour: sleep.WakeTimeWeekend.Hour, minute: sleep.WakeTimeWeekend.Minute, 0);
+                sleepItem.EndTime = CombineDateTime(wakeDate, sleep.WakeTimeWeekend);
                 sleepItem.StartTime = sleepItem.EndTime.AddHours(-sleep.HoursWeekend);
             }
             else
             {
-                sleepItem.EndTime = new DateTime(year: wakeDate.Year, month: wakeDate.Month, day: wakeDate.Day, hour: sleep.WakeTimeWeekday.Hour, minute: sleep.WakeTimeWeekday.Minute, 0);
+                sleepItem.EndTime = CombineDateTime(wakeDate, sleep.WakeTimeWeekday);
                 sleepItem.StartTime = sleepItem.EndTime.AddHours(-sleep.HoursWeekday);
             }
             return sleepItem;
+        }
+        
+        internal static List<ScheduleItem> CreateClassScheduleItem(string userId,DateTime date, List<Term> terms, List<Class> classes)
+        {
+            List<ScheduleItem> items = new List<ScheduleItem>();
+            foreach (Class _class in classes)
+            {
+                if (_class.IsSchoolDay(date.DayOfWeek))
+                {
+                    Term term = terms.FirstOrDefault(t => t.TermId == _class.TermId);
+                    if(date <= term.EndDate && date >= term.StartDate)
+                    {
+                        ScheduleItem classItem = new ScheduleItem();
+                        classItem.UserId = userId;
+                        classItem.ScheduleItemId = Guid.NewGuid().ToString();
+                        classItem.Title = $"{_class.CourseCode} - {_class.ClassName}";
+                        classItem.StartTime = CombineDateTime(date, _class.StartTime);
+                        classItem.EndTime = CombineDateTime(date, _class.EndTime);
+                        items.Add(classItem);
+                    }
+                }
+                
+            }
+            if(items.Count > 0)
+            {
+                return items;
+            }
+            return null;
+        }
+
+        static private DateTime CombineDateTime(DateTime date, DateTime time)
+        {
+            return new DateTime(year: date.Year, month: date.Month, day: date.Day, hour: time.Hour, minute: time.Minute, 0);
         }
     }
 }

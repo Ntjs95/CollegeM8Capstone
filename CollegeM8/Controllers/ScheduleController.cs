@@ -19,14 +19,25 @@ namespace CollegeM8.Controllers
 
         // GET api/Schedule/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(string id)
         {
-            return "value";
+            try
+            {
+                return Ok(_scheduleService.GetSchedule(id));
+            }
+            catch (ServiceException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error getting schedule data. Check logs for details.");
+            }
         }
 
-        // Get api/Schedule
-        [HttpGet]
-        public IActionResult GetSchedule([FromBody] Schedule value)
+        // POST api/Schedule
+        [HttpPost]
+        public IActionResult Post([FromBody] Schedule value)
         {
             try
             {

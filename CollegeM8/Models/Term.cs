@@ -14,5 +14,19 @@ namespace CollegeM8
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        internal static HashSet<string> GenerateIdVault(List<Term> terms)
+        {
+            if(terms == null || terms.Count == 0)
+            {
+                return null;
+            }
+            HashSet<string> vault = new HashSet<string>();
+            foreach (Term term in terms)
+            {
+                vault.Add(term.TermId);
+            }
+            return vault;
+        }
+
     }
 }

@@ -8,5 +8,6 @@ namespace CollegeM8
     public interface ISchedule
     {
         Schedule GenerateSchedule(Schedule schedule);
+        Schedule GetSchedule(string id);
     }
 }

@@ -21,8 +21,20 @@ namespace CollegeM8
         public bool Wednesday { get; set; }
         public bool Thursday { get; set; }
         public bool Friday { get; set; }
-        public bool Satday { get; set; }
+        public bool Saturday { get; set; }
         public bool Sunday { get; set; }
+
+        internal bool IsSchoolDay(DayOfWeek dayOfWeek)
+        {
+            if (Monday && dayOfWeek == DayOfWeek.Monday) return true;
+            if (Tuesday && dayOfWeek == DayOfWeek.Tuesday) return true;
+            if (Wednesday && dayOfWeek == DayOfWeek.Wednesday) return true;
+            if (Thursday && dayOfWeek == DayOfWeek.Thursday) return true;
+            if (Friday && dayOfWeek == DayOfWeek.Friday) return true;
+            if (Saturday && dayOfWeek == DayOfWeek.Saturday) return true;
+            if (Sunday && dayOfWeek == DayOfWeek.Sunday) return true;
+            return false;
+        }
 
     }
 }
