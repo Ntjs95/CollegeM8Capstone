@@ -20,6 +20,9 @@ namespace CollegeM8
             {
                 throw new ServiceException("Data invalid to create schedule.");
             }
+            Schedule schedule = new Schedule();
+            schedule.startDate = scheduleRequest.startDate;
+            schedule.endDate = scheduleRequest.endDate;
             //Data Setup
             List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
             Sleep sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == scheduleRequest.userId);
@@ -49,14 +52,19 @@ namespace CollegeM8
                         }
                     }
                 }
+                // Add Exams
+
+                // Add Assignments
                 
 
                 scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1); // Increment while loop
             }
+
             // Remove old items from schedule
             ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();
             oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(si.StartTime, si.EndTime, scheduleRequest.startDate, scheduleRequest.endDate)).ToArray();
             _db.Schedule.RemoveRange(oldScheduleItems);
+
             // Add New items to schedule
             foreach (ScheduleItem item in scheduleItems)
             {
@@ -64,7 +72,7 @@ namespace CollegeM8
             }
             _db.SaveChanges();
 
-            Schedule schedule = new Schedule();
+            
             schedule.userId = scheduleRequest.userId;
             schedule.schedule = scheduleItems;
             return schedule;

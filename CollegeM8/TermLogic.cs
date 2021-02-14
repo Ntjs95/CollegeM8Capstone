@@ -42,7 +42,7 @@ namespace CollegeM8
 
         public Term[] GetTermByUser(string userId)
         {
-            Term[] terms = _db.Term.Where(t => t.UserId == userId).ToArray();
+            Term[] terms = _db.Term.AsNoTracking().Where(t => t.UserId == userId).ToArray();
             if (terms != null && terms.Length > 0)
             {
                 return terms;

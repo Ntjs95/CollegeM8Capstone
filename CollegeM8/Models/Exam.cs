@@ -15,5 +15,15 @@ namespace CollegeM8
         public string UserId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+
+        internal static bool AnyExamsOverlap(Exam exam, Exam[] exams)
+        {
+            bool anyOverlap = false;
+            foreach (Exam existingExam in exams)
+            {
+                anyOverlap |= DateHelper.AnyDatesIntersect(exam.StartTime, exam.EndTime, existingExam.StartTime, existingExam.EndTime);
+            }
+            return anyOverlap;
+        }
     }
 }
