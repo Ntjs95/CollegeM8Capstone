@@ -17,10 +17,15 @@ namespace CollegeM8
 
         public Term CreateTerm(Term term)
         {
-            term.TermId = Guid.NewGuid().ToString();
-            _db.Term.Add(term);
-            _db.SaveChanges();
-            return GetTerm(term.TermId);
+            Term[] terms = _db.Term.AsNoTracking().Where(t => t.UserId == term.UserId).ToArray();
+            if (!Term.AnyTermsOverlap(term, terms))
+            {
+                term.TermId = Guid.NewGuid().ToString();
+                _db.Term.Add(term);
+                _db.SaveChanges();
+                return GetTerm(term.TermId);
+            }
+            throw new ServiceException("Terms cannot overlap");
         }
 
         public bool DeleteTerm(string id)

@@ -36,6 +36,24 @@ namespace CollegeM8.Controllers
             }
         }
 
+        // GET api/Class/5
+        [HttpGet("User/{id}")]
+        public IActionResult GetByUser(string id)
+        {
+            try
+            {
+                return Ok(_classService.GetClassByUser(id));
+            }
+            catch (ServiceException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error getting user class data. Check logs for details.");
+            }
+        }
+
         // POST api/Class
         [HttpPost]
         public IActionResult Post([FromBody] Class _class)

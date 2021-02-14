@@ -35,6 +35,16 @@ namespace CollegeM8
             return _db.Classes.AsNoTracking().FirstOrDefault(c => c.ClassId == id) ?? throw new ServiceException("Class not found");
         }
 
+        public Class[] GetClassByUser(string userId)
+        {
+            Class[] classes = _db.Classes.AsNoTracking().Where(c => c.UserId == userId).ToArray();
+            if(classes != null && classes.Length > 0)
+            {
+                return classes;
+            }
+            throw new ServiceException("Could not find classes");
+        }
+
         public Class UpdateClass(Class newClass)
         {
             Class oldClass = _db.Classes.FirstOrDefault(c => c.ClassId == newClass.ClassId);

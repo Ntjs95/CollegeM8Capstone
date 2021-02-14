@@ -41,7 +41,7 @@ namespace CollegeM8
                 ScheduleItem classItem = new ScheduleItem();
                 classItem.UserId = userId;
                 classItem.ScheduleItemId = Guid.NewGuid().ToString();
-                classItem.Title = $"{_class.CourseCode} - {_class.ClassName}";
+                classItem.Title = $"Class: {_class.CourseCode} - {_class.ClassName}";
                 classItem.StartTime = CombineDateTime(date, _class.StartTime);
                 classItem.EndTime = CombineDateTime(date, _class.EndTime);
                 items.Add(classItem);

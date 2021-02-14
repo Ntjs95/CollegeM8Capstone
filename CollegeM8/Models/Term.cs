@@ -28,5 +28,14 @@ namespace CollegeM8
             return vault;
         }
 
+        internal static bool AnyTermsOverlap(Term newTerm, Term[] existingTerms)
+        {
+            bool anyOverlap = false;
+            foreach (Term existingTerm in existingTerms)
+            { 
+                anyOverlap |= DateHelper.AnyDatesIntersect(newTerm.StartDate, newTerm.EndDate, existingTerm.StartDate, existingTerm.EndDate);
+            }
+            return anyOverlap;
+        }
     }
 }

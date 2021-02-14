@@ -20,6 +20,7 @@ namespace CollegeM8
             {
                 throw new ServiceException("Data invalid to create schedule.");
             }
+            //Data Setup
             List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
             Sleep sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == scheduleRequest.userId);
             Term[] terms = _db.Term.AsNoTracking().Where(t => t.UserId == scheduleRequest.userId).Where(t => (scheduleRequest.startDate >= t.StartDate && scheduleRequest.startDate <= t.EndDate) ||
@@ -28,17 +29,18 @@ namespace CollegeM8
             HashSet<string> termIdVault = Term.GenerateIdVault(terms);
             Class[] classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToArray();
 
-            while (scheduleRequest.startDate <= scheduleRequest.endDate) // Per Day
+            // Per Day Schedule Item Createion
+            while (scheduleRequest.startDate <= scheduleRequest.endDate) 
             {
                 // Add Sleep
                 ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, sleep);
                 scheduleItems.Add(sleepItem);
                 // Add Classes
-                Term term = terms.FirstOrDefault(t => t.StartDate <= scheduleRequest.startDate && scheduleRequest.startDate <= t.EndDate); // Choose term that we are in today
+                Term term = terms.FirstOrDefault(t => t.StartDate <= scheduleRequest.startDate && scheduleRequest.startDate <= t.EndDate); // Choose term that we are in today (since terms cannot overlap)
                 if (term != null)
                 {
                     Class[] dayOfWeekClasses = classes.Where(c => c.TermId == term.TermId && c.IsSchoolDay(scheduleRequest.startDate.DayOfWeek)).ToArray(); // Choose classes on this day of the week in this term
-                    if (dayOfWeekClasses == null || dayOfWeekClasses.Length == 0)
+                    if (dayOfWeekClasses != null && dayOfWeekClasses.Length > 0)
                     {
                         List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, dayOfWeekClasses);
                         if (classItems != null)
@@ -49,9 +51,13 @@ namespace CollegeM8
                 }
                 
 
-                scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1);
+                scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1); // Increment while loop
             }
-
+            // Remove old items from schedule
+            ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();
+            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(si.StartTime, si.EndTime, scheduleRequest.startDate, scheduleRequest.endDate)).ToArray();
+            _db.Schedule.RemoveRange(oldScheduleItems);
+            // Add New items to schedule
             foreach (ScheduleItem item in scheduleItems)
             {
                 _db.Schedule.Add(item);
