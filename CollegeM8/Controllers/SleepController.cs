@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollegeM8.Controllers
@@ -10,21 +9,22 @@ namespace CollegeM8.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Consumes("application/json")]
-    public class EventController : ControllerBase
+    public class SleepController : Controller
     {
-        private IEventLogic _eventLogic;
-        public EventController(IEventLogic eventLogic)
+        ISleepLogic _sleepLogic;
+
+        public SleepController(ISleepLogic sleepLogic)
         {
-            _eventLogic = eventLogic;
+            _sleepLogic = sleepLogic;
         }
 
-        // GET api/Event/5
+        // GET api/Sleep/5
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
             try
             {
-                return Ok(_eventLogic.GetEvent(id));
+                return Ok(_sleepLogic.GetSleep(id));
             }
             catch (ServiceException e)
             {
@@ -32,17 +32,17 @@ namespace CollegeM8.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Error getting event. Check logs for details.");
+                return BadRequest("Error getting sleep data. Check logs for details.");
             }
         }
 
-        // POST api/Event
+        // POST api/Sleep
         [HttpPost]
-        public IActionResult Post([FromBody] Event schedEvent)
+        public IActionResult Post([FromBody] Sleep sleep)
         {
             try
             {
-                return Ok(_eventLogic.CreateEvent(schedEvent));
+                return Ok(_sleepLogic.CreateSleep(sleep));
             }
             catch (ServiceException e)
             {
@@ -50,26 +50,29 @@ namespace CollegeM8.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Error creating event. Check logs for details.");
+                return BadRequest("Error creating sleep data. Check logs for details.");
+            }
+        }
+        
+        // PUT api/Sleep
+        [HttpPut]
+        public IActionResult Put([FromBody] Sleep sleep)
+        {
+            try
+            {
+                return Ok(_sleepLogic.UpdateSleep(sleep));
+            }
+            catch (ServiceException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error updating sleep data. Check logs for details.");
             }
         }
 
-        // GET api/Event/User/5
-        [HttpGet("User/{userId}")]
-        public IActionResult GetByUser(string userId)
-        {
-            try
-            {
-                return Ok(_eventLogic.GetEventsByUser(userId));
-            }
-            catch (ServiceException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception)
-            {
-                return BadRequest("Error getting event. Check logs for details.");
-            }
-        }
+
+
     }
 }
