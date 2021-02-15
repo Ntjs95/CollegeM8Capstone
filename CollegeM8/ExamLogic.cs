@@ -23,6 +23,7 @@ namespace CollegeM8
                 exam.ExamId = Guid.NewGuid().ToString();
                 _db.Exams.Add(exam);
                 _db.SaveChanges();
+                return GetExam(exam.ExamId);
             }
             throw new ServiceException("Exam times cannot overlap.");
         }
@@ -58,7 +59,6 @@ namespace CollegeM8
             }
             else
             {
-                oldExam.TermId = exam.TermId;
                 oldExam.ClassId = exam.ClassId;
                 oldExam.StartTime = exam.StartTime;
                 oldExam.EndTime = exam.EndTime;
