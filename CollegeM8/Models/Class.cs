@@ -24,6 +24,8 @@ namespace CollegeM8
         public bool Saturday { get; set; }
         public bool Sunday { get; set; }
 
+        public static string TITLE_START = "CLASS: ";
+
         internal bool IsSchoolDay(DayOfWeek dayOfWeek)
         {
             if (Monday && dayOfWeek == DayOfWeek.Monday) return true;

@@ -16,6 +16,8 @@ namespace CollegeM8
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
+        public static string TITLE_START = "EXAM: ";
+
         internal static bool AnyExamsOverlap(Exam exam, Exam[] exams)
         {
             bool anyOverlap = false;

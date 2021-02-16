@@ -19,5 +19,7 @@ namespace CollegeM8
         public int GradeWeight { get; set; } // 1-100
         public float HoursToComplete { get; set; }
         private float HoursCompleted { get; set; }
+
+        public static string TITLE_START = "ASSIGNMENT: ";
     }
 }
