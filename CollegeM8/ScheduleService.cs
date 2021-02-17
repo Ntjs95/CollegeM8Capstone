@@ -20,9 +20,6 @@ namespace CollegeM8
             {
                 throw new ServiceException("Data invalid to create schedule.");
             }
-            Schedule schedule = new Schedule();
-            schedule.startDate = scheduleRequest.startDate;
-            schedule.endDate = scheduleRequest.endDate;
             //Data Setup
             List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
             Sleep sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == scheduleRequest.userId);
@@ -32,20 +29,21 @@ namespace CollegeM8
             HashSet<string> termIdVault = Term.GenerateIdVault(terms);
             Class[] classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToArray();
 
+            DateTime currentDate = scheduleRequest.startDate;
             // Per Day Schedule Item Createion
-            while (scheduleRequest.startDate <= scheduleRequest.endDate) 
+            while (currentDate <= scheduleRequest.endDate) 
             {
                 // Add Sleep
-                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, sleep);
+                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, currentDate, sleep);
                 scheduleItems.Add(sleepItem);
                 // Add Classes
-                Term term = terms.FirstOrDefault(t => t.StartDate <= scheduleRequest.startDate && scheduleRequest.startDate <= t.EndDate); // Choose term that we are in today (since terms cannot overlap)
+                Term term = terms.FirstOrDefault(t => t.StartDate <= currentDate && currentDate <= t.EndDate); // Choose term that we are in today (since terms cannot overlap)
                 if (term != null)
                 {
-                    Class[] dayOfWeekClasses = classes.Where(c => c.TermId == term.TermId && c.IsSchoolDay(scheduleRequest.startDate.DayOfWeek)).ToArray(); // Choose classes on this day of the week in this term
+                    Class[] dayOfWeekClasses = classes.Where(c => c.TermId == term.TermId && c.IsSchoolDay(currentDate.DayOfWeek)).ToArray(); // Choose classes on this day of the week in this term
                     if (dayOfWeekClasses != null && dayOfWeekClasses.Length > 0)
                     {
-                        List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, dayOfWeekClasses);
+                        List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItem(scheduleRequest.userId, currentDate, dayOfWeekClasses);
                         if (classItems != null)
                         {
                             scheduleItems.AddRange(classItems);
@@ -55,14 +53,14 @@ namespace CollegeM8
                 // Add Exams
 
                 // Add Assignments
-                
 
-                scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1); // Increment while loop
+
+                currentDate = currentDate.AddDays(1); // Increment while loop
             }
 
             // Remove old items from schedule
             ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();
-            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(si.StartTime, si.EndTime, scheduleRequest.startDate, scheduleRequest.endDate)).ToArray();
+            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(scheduleRequest.startDate, scheduleRequest.endDate, si.StartTime, si.EndTime)).ToArray();
             _db.Schedule.RemoveRange(oldScheduleItems);
 
             // Add New items to schedule
@@ -72,7 +70,9 @@ namespace CollegeM8
             }
             _db.SaveChanges();
 
-            
+            Schedule schedule = new Schedule();
+            schedule.startDate = scheduleRequest.startDate;
+            schedule.endDate = scheduleRequest.endDate;
             schedule.userId = scheduleRequest.userId;
             schedule.schedule = scheduleItems;
             return schedule;
@@ -81,7 +81,7 @@ namespace CollegeM8
         public Schedule GetSchedule(string id)
         {
             Schedule schedule = new Schedule();
-            List<ScheduleItem> items =_db.Schedule.AsNoTracking().Where(s => s.UserId == id).ToList();
+            List<ScheduleItem> items =_db.Schedule.AsNoTracking().Where(s => s.UserId == id).OrderBy(s => s.StartTime).ToList();
             schedule.userId = id;
             schedule.schedule = items;
             return schedule;

@@ -18,7 +18,7 @@ namespace CollegeM8
             ScheduleItem sleepItem = new ScheduleItem();
             sleepItem.UserId = userId;
             sleepItem.ScheduleItemId = Guid.NewGuid().ToString();
-            sleepItem.Title = Sleep.SCHED_ITEM_TITLE;
+            sleepItem.Title = Sleep.TITLE_START;
             if (wakeDate.DayOfWeek == DayOfWeek.Saturday || wakeDate.DayOfWeek == DayOfWeek.Sunday)
             {
                 sleepItem.EndTime = CombineDateTime(wakeDate, sleep.WakeTimeWeekend);
