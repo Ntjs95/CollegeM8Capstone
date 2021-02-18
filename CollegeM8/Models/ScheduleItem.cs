@@ -21,18 +21,18 @@ namespace CollegeM8
             sleepItem.Title = Sleep.TITLE_START;
             if (wakeDate.DayOfWeek == DayOfWeek.Saturday || wakeDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                sleepItem.EndTime = CombineDateTime(wakeDate, sleep.WakeTimeWeekend);
+                sleepItem.EndTime = DateHelper.CombineDateTime(wakeDate, sleep.WakeTimeWeekend);
                 sleepItem.StartTime = sleepItem.EndTime.AddHours(-sleep.HoursWeekend);
             }
             else
             {
-                sleepItem.EndTime = CombineDateTime(wakeDate, sleep.WakeTimeWeekday);
+                sleepItem.EndTime = DateHelper.CombineDateTime(wakeDate, sleep.WakeTimeWeekday);
                 sleepItem.StartTime = sleepItem.EndTime.AddHours(-sleep.HoursWeekday);
             }
             return sleepItem;
         }
         
-        internal static List<ScheduleItem> CreateClassScheduleItem(string userId,DateTime date, Class[] classesToday)
+        internal static List<ScheduleItem> CreateClassScheduleItems(string userId,DateTime date, Class[] classesToday)
         {
 
             List<ScheduleItem> items = new List<ScheduleItem>();
@@ -41,11 +41,10 @@ namespace CollegeM8
                 ScheduleItem classItem = new ScheduleItem();
                 classItem.UserId = userId;
                 classItem.ScheduleItemId = Guid.NewGuid().ToString();
-                classItem.Title = $"Class: {_class.CourseCode} - {_class.ClassName}";
-                classItem.StartTime = CombineDateTime(date, _class.StartTime);
-                classItem.EndTime = CombineDateTime(date, _class.EndTime);
+                classItem.Title = $"{Class.TITLE_START}{_class.CourseCode} - {_class.ClassName}";
+                classItem.StartTime = DateHelper.CombineDateTime(date, _class.StartTime);
+                classItem.EndTime = DateHelper.CombineDateTime(date, _class.EndTime);
                 items.Add(classItem);
-
             }
             if(items.Count > 0)
             {
@@ -54,9 +53,29 @@ namespace CollegeM8
             return null;
         }
 
-        static private DateTime CombineDateTime(DateTime date, DateTime time)
+        internal static List<ScheduleItem> CreateExamScheduleItems(string userId, Exam[] exams, Class[] classes)
         {
-            return new DateTime(year: date.Year, month: date.Month, day: date.Day, hour: time.Hour, minute: time.Minute, 0);
+            if(classes == null || exams == null || classes.Length == 0 || exams.Length == 0)
+            {
+                return null;
+            }
+            List<ScheduleItem> items = new List<ScheduleItem>();
+            foreach (Exam exam in exams)
+            {
+                Class _class = classes.FirstOrDefault(c => c.ClassId == exam.ClassId);
+                ScheduleItem examItem = new ScheduleItem();
+                examItem.UserId = userId;
+                examItem.ScheduleItemId = Guid.NewGuid().ToString();
+                examItem.Title = $"{Exam.TITLE_START}{_class.CourseCode} - {_class.ClassName}";
+                examItem.StartTime = exam.StartTime;
+                examItem.EndTime = exam.EndTime;
+                items.Add(examItem);
+            }
+            if(items.Count > 0)
+            {
+                return items;
+            }
+            return null;
         }
     }
 }
