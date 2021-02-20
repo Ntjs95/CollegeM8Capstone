@@ -38,16 +38,16 @@ namespace CollegeM8
             return false;
         }
 
-        internal static HashSet<string> GenerateIdVault(Class[] _class)
+        internal static HashSet<string> GenerateIdVault(Class[] classes)
         {
-            if (_class == null || _class.Length == 0)
+            if (classes == null || classes.Length == 0)
             {
                 return null;
             }
             HashSet<string> vault = new HashSet<string>();
-            foreach (Class term in _class)
+            foreach (Class _class in classes)
             {
-                vault.Add(term.TermId);
+                vault.Add(_class.ClassId);
             }
             return vault;
         }
