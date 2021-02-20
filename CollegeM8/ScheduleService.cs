@@ -67,9 +67,12 @@ namespace CollegeM8
                         }
                     }
                 }
-                // Add Assignments
                 currentDate = currentDate.AddDays(1); // Increment while loop
             }
+            // Make Smart Adjustments
+            scheduleItems = ScheduleItem.AdjustSleepTimes(scheduleItems);
+
+            // Add assignments
 
             // Remove old items from schedule
             ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();
