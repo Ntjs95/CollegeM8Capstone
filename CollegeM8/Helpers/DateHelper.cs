@@ -13,5 +13,10 @@ namespace CollegeM8
             bool startsAfter = secondSpanStart > firstSpanEnd;
             return !(endsBefore || startsAfter); // English = "If it does not end before the span, or start after the span, it must exist during the span."
         }
+
+        static internal DateTime CombineDateTime(DateTime date, DateTime time)
+        {
+            return new DateTime(year: date.Year, month: date.Month, day: date.Day, hour: time.Hour, minute: time.Minute, 0);
+        }
     }
 }

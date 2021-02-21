@@ -8,7 +8,7 @@ namespace CollegeM8
 {
     public class Sleep
     {
-        public static string SCHED_ITEM_TITLE = "Sleep";
+        public static string TITLE_START = "SLEEP";
         [Key]
         public string UserId { get; set; }
         public float HoursWeekday { get; set; }

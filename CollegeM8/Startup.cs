@@ -49,6 +49,8 @@ namespace CollegeM8
             services.AddScoped<IScheduleItem, ScheduleItemLogic>();
             services.AddScoped<IClass, ClassLogic>();
             services.AddScoped<ITerm, TermLogic>();
+            services.AddScoped<IAssignment, AssignmentLogic>();
+            services.AddScoped<IExam, ExamLogic>();
         } 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

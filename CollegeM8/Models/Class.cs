@@ -24,6 +24,8 @@ namespace CollegeM8
         public bool Saturday { get; set; }
         public bool Sunday { get; set; }
 
+        public static string TITLE_START = "CLASS: ";
+
         internal bool IsSchoolDay(DayOfWeek dayOfWeek)
         {
             if (Monday && dayOfWeek == DayOfWeek.Monday) return true;
@@ -34,6 +36,20 @@ namespace CollegeM8
             if (Saturday && dayOfWeek == DayOfWeek.Saturday) return true;
             if (Sunday && dayOfWeek == DayOfWeek.Sunday) return true;
             return false;
+        }
+
+        internal static HashSet<string> GenerateIdVault(Class[] classes)
+        {
+            if (classes == null || classes.Length == 0)
+            {
+                return null;
+            }
+            HashSet<string> vault = new HashSet<string>();
+            foreach (Class _class in classes)
+            {
+                vault.Add(_class.ClassId);
+            }
+            return vault;
         }
 
     }

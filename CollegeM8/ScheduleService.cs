@@ -27,36 +27,58 @@ namespace CollegeM8
             (scheduleRequest.endDate <= t.EndDate && scheduleRequest.endDate >= t.StartDate) ||
             (scheduleRequest.startDate <= t.StartDate && scheduleRequest.endDate >= t.EndDate)).ToArray();
             HashSet<string> termIdVault = Term.GenerateIdVault(terms);
-            Class[] classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToArray();
+            Class[] classes = null;
+            Exam[] exams = null;
+            if (termIdVault != null)
+            {
+                classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToArray();
+                HashSet<string> classIdVault = Class.GenerateIdVault(classes);
+                if (classIdVault != null)
+                {
+                    exams = _db.Exams.AsNoTracking().Where(e => e.UserId == scheduleRequest.userId).Where(e => classIdVault.Contains(e.ClassId)).ToArray();
+                }
+            }
+
+            // Add Exams to schedule
+            List<ScheduleItem> examItems = ScheduleItem.CreateExamScheduleItems(scheduleRequest.userId, exams, classes);
+            if(examItems != null)
+            {
+                scheduleItems.AddRange(examItems);
+            }
 
             // Per Day Schedule Item Createion
-            while (scheduleRequest.startDate <= scheduleRequest.endDate) 
+            DateTime currentDate = scheduleRequest.startDate;
+            while (currentDate <= scheduleRequest.endDate) 
             {
                 // Add Sleep
-                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, sleep);
+                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, currentDate, sleep);
                 scheduleItems.Add(sleepItem);
                 // Add Classes
-                Term term = terms.FirstOrDefault(t => t.StartDate <= scheduleRequest.startDate && scheduleRequest.startDate <= t.EndDate); // Choose term that we are in today (since terms cannot overlap)
-                if (term != null)
+                Term term = terms.FirstOrDefault(t => t.StartDate <= currentDate && currentDate <= t.EndDate); // Choose term that we are in today (since terms cannot overlap)
+                if (term != null && classes != null)
                 {
-                    Class[] dayOfWeekClasses = classes.Where(c => c.TermId == term.TermId && c.IsSchoolDay(scheduleRequest.startDate.DayOfWeek)).ToArray(); // Choose classes on this day of the week in this term
+                    Class[] dayOfWeekClasses = classes.Where(c => c.TermId == term.TermId && c.IsSchoolDay(currentDate.DayOfWeek)).ToArray(); // Choose classes on this day of the week in this term
                     if (dayOfWeekClasses != null && dayOfWeekClasses.Length > 0)
                     {
-                        List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItem(scheduleRequest.userId, scheduleRequest.startDate, dayOfWeekClasses);
+                        List<ScheduleItem> classItems = ScheduleItem.CreateClassScheduleItems(scheduleRequest.userId, currentDate, dayOfWeekClasses);
                         if (classItems != null)
                         {
                             scheduleItems.AddRange(classItems);
                         }
                     }
                 }
-                
-
-                scheduleRequest.startDate = scheduleRequest.startDate.AddDays(1); // Increment while loop
+                currentDate = currentDate.AddDays(1); // Increment while loop
             }
+            // Make Smart Adjustments
+            scheduleItems = ScheduleItem.AdjustSleepTimes(scheduleItems);
+
+            // Add assignments
+
             // Remove old items from schedule
             ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();
-            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(si.StartTime, si.EndTime, scheduleRequest.startDate, scheduleRequest.endDate)).ToArray();
+            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(scheduleRequest.startDate, scheduleRequest.endDate, si.StartTime, si.EndTime)).ToArray(); // Removes items that already exist during the scheduling time
             _db.Schedule.RemoveRange(oldScheduleItems);
+
             // Add New items to schedule
             foreach (ScheduleItem item in scheduleItems)
             {
@@ -65,15 +87,17 @@ namespace CollegeM8
             _db.SaveChanges();
 
             Schedule schedule = new Schedule();
+            schedule.startDate = scheduleRequest.startDate;
+            schedule.endDate = scheduleRequest.endDate;
             schedule.userId = scheduleRequest.userId;
-            schedule.schedule = scheduleItems;
+            schedule.schedule = scheduleItems.OrderBy(si => si.StartTime).ToList();
             return schedule;
         }
 
         public Schedule GetSchedule(string id)
         {
             Schedule schedule = new Schedule();
-            List<ScheduleItem> items =_db.Schedule.AsNoTracking().Where(s => s.UserId == id).ToList();
+            List<ScheduleItem> items =_db.Schedule.AsNoTracking().Where(s => s.UserId == id).OrderBy(s => s.StartTime).ToList();
             schedule.userId = id;
             schedule.schedule = items;
             return schedule;

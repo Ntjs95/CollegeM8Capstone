@@ -17,6 +17,10 @@ namespace CollegeM8
 
         public Term CreateTerm(Term term)
         {
+            if(term.StartDate >= term.EndDate)
+            {
+                throw new ServiceException("Term dates are invalid.");
+            }
             Term[] terms = _db.Term.AsNoTracking().Where(t => t.UserId == term.UserId).ToArray();
             if (!Term.AnyTermsOverlap(term, terms))
             {
@@ -42,7 +46,7 @@ namespace CollegeM8
 
         public Term[] GetTermByUser(string userId)
         {
-            Term[] terms = _db.Term.Where(t => t.UserId == userId).ToArray();
+            Term[] terms = _db.Term.AsNoTracking().Where(t => t.UserId == userId).ToArray();
             if (terms != null && terms.Length > 0)
             {
                 return terms;
