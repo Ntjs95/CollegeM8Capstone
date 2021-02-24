@@ -16,5 +16,7 @@ namespace CollegeM8
         public DateTime WakeTimeWeekday { get; set; }
         public DateTime WakeTimeWeekend { get; set; }
 
+        public User User { get; set; }
+
     }
 }
