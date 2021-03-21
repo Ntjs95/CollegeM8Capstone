@@ -29,6 +29,7 @@ namespace CollegeM8
             HashSet<string> termIdVault = Term.GenerateIdVault(terms);
             Class[] classes = null;
             Exam[] exams = null;
+            Assignment[] assignments = null;
             if (termIdVault != null)
             {
                 classes = _db.Classes.AsNoTracking().Where(c => c.UserId == scheduleRequest.userId).Where(c => termIdVault.Contains(c.TermId)).ToArray();
@@ -36,6 +37,7 @@ namespace CollegeM8
                 if (classIdVault != null)
                 {
                     exams = _db.Exams.AsNoTracking().Where(e => e.UserId == scheduleRequest.userId).Where(e => classIdVault.Contains(e.ClassId)).ToArray();
+                    assignments = _db.Assignments.AsNoTracking().Where(a => a.UserId == scheduleRequest.userId).Where(a => classIdVault.Contains(a.ClassId)).ToArray();
                 }
             }
 
@@ -73,6 +75,43 @@ namespace CollegeM8
             scheduleItems = ScheduleItem.AdjustSleepTimes(scheduleItems);
 
             // Add assignments
+            if (assignments != null)
+            {
+                List<ScheduleItem> assignmentItems = new List<ScheduleItem>();
+                foreach (var assignment in assignments)
+                {
+                    assignmentItems.AddRange(assignment.CreateScheduleItems(classes));
+                }
+                List<DualDates> freeSpace = ScheduleItem.GetFreeSpace(scheduleItems);
+                if (assignmentItems != null && freeSpace != null)
+                {
+                    foreach (ScheduleItem assignmentItem in assignmentItems)
+                    {
+                        bool isTimeFound = false;
+                        double assignmentLengthHours = assignmentItem.EndTime.Subtract(assignmentItem.StartTime).TotalHours;
+                        List<DualDates> freeTimeThisDayAcendingLength = freeSpace.Where(s => DateHelper.IsSameDay(assignmentItem.StartTime, s.Start)).OrderBy(s => s.LengthHours()).ToList();
+                        for (int i = 0; i < freeTimeThisDayAcendingLength.Count; i++)
+                        {
+                            if (freeTimeThisDayAcendingLength[i].LengthHours() >= assignmentLengthHours)
+                            {
+                                assignmentItem.StartTime = freeTimeThisDayAcendingLength[i].Start;
+                                assignmentItem.EndTime = assignmentItem.StartTime.AddHours(assignmentLengthHours);
+                                isTimeFound = true;
+                                break;
+                            }
+                        }
+                        if (!isTimeFound)
+                        {
+                            assignmentItem.StartTime = freeTimeThisDayAcendingLength.Last().Start;
+                            assignmentItem.EndTime = assignmentItem.StartTime.AddHours(assignmentLengthHours);
+                            isTimeFound = true;
+                        }
+                        // Clean seconds to be even.
+                        assignmentItem.EndTime = assignmentItem.EndTime.AddSeconds(-assignmentItem.EndTime.Second).AddMilliseconds(-assignmentItem.EndTime.Millisecond);
+                    }
+                    scheduleItems.AddRange(assignmentItems);
+                }
+            }
 
             // Remove old items from schedule
             ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();

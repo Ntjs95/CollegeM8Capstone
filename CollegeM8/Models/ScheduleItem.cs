@@ -42,6 +42,30 @@ namespace CollegeM8
             NULL
         }
 
+        internal static List<DualDates> GetFreeSpace(List<ScheduleItem> schedule)
+        {
+            List<DualDates> freeSpace = new List<DualDates>();
+
+            schedule = schedule.OrderBy(si => si.StartTime).ToList();
+            int lengthSched = schedule.Count;
+
+            for (int i = 0; i < lengthSched; i++)
+            {
+                if((i != lengthSched-1) && schedule[i+1].StartTime > schedule[i].EndTime)
+                {
+                    DualDates dates = new DualDates();
+                    dates.Start = schedule[i].EndTime;
+                    dates.End = schedule[i].StartTime;
+                    freeSpace.Add(dates);
+                }
+            }
+            if (freeSpace.Count > 0)
+            {
+                return freeSpace;
+            }
+            return null;
+        }
+
         internal static ScheduleItem CreateSleepScheduleItem(string userId, DateTime wakeDate, Sleep sleep)
         {
             ScheduleItem sleepItem = new ScheduleItem();
