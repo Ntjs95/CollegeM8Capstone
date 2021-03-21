@@ -22,6 +22,10 @@ namespace CollegeM8
         public string ProgramName { get; set; }
         public string EmailAddress { get; set; }
         public DateTime BirthDate { get; set; }
+        public Sleep Sleep { get; set; }
+        public Login Login { get; set; }
+        public List<Term> Terms { get; set; }
+        public List<ScheduleItem> ScheduleItems { get; set; }
 
     }
 }

@@ -18,5 +18,10 @@ namespace CollegeM8
         {
             return new DateTime(year: date.Year, month: date.Month, day: date.Day, hour: time.Hour, minute: time.Minute, 0);
         }
+
+        static internal bool IsSameDay(DateTime firstDate, DateTime secondDate)
+        {
+            return firstDate.Day == secondDate.Day && firstDate.Month == secondDate.Month && firstDate.Year == secondDate.Year;
+        }
     }
 }

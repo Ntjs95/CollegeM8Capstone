@@ -19,11 +19,11 @@ namespace CollegeM8
 
         // GET api/User/5
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public IActionResult Get(string id, bool expand = false)
         {
             try
             {
-                return Ok(_userLogic.GetUser(id));
+                return Ok(_userLogic.GetUser(id, expand));
             }
             catch (ServiceException e)
             {

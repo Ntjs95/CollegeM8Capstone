@@ -23,6 +23,8 @@ namespace CollegeM8
         public bool Friday { get; set; }
         public bool Saturday { get; set; }
         public bool Sunday { get; set; }
+        public List<Exam> Exams { get; set; }
+        public List<Assignment> Assignments { get; set; }
 
         public static string TITLE_START = "CLASS: ";
 

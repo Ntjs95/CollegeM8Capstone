@@ -36,12 +36,22 @@ namespace CollegeM8
 
             }
             else throw new ServiceException("User Already Exists");
-            return GetUser(guid);
+            return GetUser(guid, false);
         }
 
-        public User GetUser(string id)
+        public User GetUser(string id, bool expand)
         {
-            User user = _db.Users.AsNoTracking().FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
+            User user;
+            if (expand) {
+                user = _db.Users.AsNoTracking().Include(x => x.Terms).ThenInclude(x => x.Classes).ThenInclude(x => x.Exams)
+                    .Include(x => x.Terms).ThenInclude(x => x.Classes).ThenInclude(x => x.Assignments)
+                    .FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
+                user.Sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == id);
+            }
+            else
+            {
+                user = _db.Users.AsNoTracking().FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
+            }
             return user;
         }
 
@@ -56,7 +66,7 @@ namespace CollegeM8
             existingUser.EmailAddress = user.EmailAddress;
             _db.Users.Update(existingUser);
             _db.SaveChanges();
-            return GetUser(user.UserId);
+            return GetUser(user.UserId, false);
         }
 
         public User Login(Login login)
@@ -64,7 +74,7 @@ namespace CollegeM8
             Login loginfound = _db.Logins.FirstOrDefault(l => l.Username == login.Username);
             if (loginfound != null && PasswordHash.Verify(login.Password, loginfound.Password))
             {
-                return GetUser(loginfound.UserId);
+                return GetUser(loginfound.UserId, true);
             }
             else
             {
@@ -82,7 +92,7 @@ namespace CollegeM8
                 loginfound.PasswordLastChangedDate = DateTime.Now;
                 _db.Logins.Update(loginfound);
                 _db.SaveChanges();
-                return GetUser(loginfound.UserId);
+                return GetUser(loginfound.UserId, false);
             }
             else
             {

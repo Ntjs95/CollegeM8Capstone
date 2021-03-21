@@ -4,14 +4,16 @@ using CollegeM8;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CollegeM8.Migrations
 {
     [DbContext(typeof(CollegeM8Context))]
-    partial class CollegeM8ContextModelSnapshot : ModelSnapshot
+    [Migration("20210223205627_TableLinkLists")]
+    partial class TableLinkLists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,10 +248,15 @@ namespace CollegeM8.Migrations
                     b.Property<string>("SchoolName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SleepUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("SleepUserId");
 
                     b.ToTable("Users");
                 });
@@ -289,22 +296,20 @@ namespace CollegeM8.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("CollegeM8.Sleep", b =>
-                {
-                    b.HasOne("CollegeM8.User", "User")
-                        .WithOne("Sleep")
-                        .HasForeignKey("CollegeM8.Sleep", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("CollegeM8.Term", b =>
                 {
                     b.HasOne("CollegeM8.User", null)
                         .WithMany("Terms")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("CollegeM8.User", b =>
+                {
+                    b.HasOne("CollegeM8.Sleep", "Sleep")
+                        .WithMany()
+                        .HasForeignKey("SleepUserId");
+
+                    b.Navigation("Sleep");
                 });
 
             modelBuilder.Entity("CollegeM8.Class", b =>
@@ -324,8 +329,6 @@ namespace CollegeM8.Migrations
                     b.Navigation("Login");
 
                     b.Navigation("ScheduleItems");
-
-                    b.Navigation("Sleep");
 
                     b.Navigation("Terms");
                 });
