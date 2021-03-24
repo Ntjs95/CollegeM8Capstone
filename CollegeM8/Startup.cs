@@ -34,6 +34,7 @@ namespace CollegeM8
                                   {
                                       builder.WithOrigins("*");
                                       builder.WithHeaders("Content-Type");
+                                      builder.AllowAnyMethod();
                                   });
             });
             services.AddControllers();

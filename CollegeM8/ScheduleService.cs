@@ -136,7 +136,7 @@ namespace CollegeM8
         public Schedule GetSchedule(string id)
         {
             Schedule schedule = new Schedule();
-            List<ScheduleItem> items =_db.Schedule.AsNoTracking().Where(s => s.UserId == id).OrderBy(s => s.StartTime).ToList();
+            List<ScheduleItem> items =_db.Schedule.AsNoTracking().Where(s => s.UserId == id && s.StartTime >= DateTime.Now).OrderBy(s => s.StartTime).ToList();
             schedule.userId = id;
             schedule.schedule = items;
             return schedule;
