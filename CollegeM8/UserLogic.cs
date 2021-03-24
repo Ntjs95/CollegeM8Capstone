@@ -45,7 +45,6 @@ namespace CollegeM8
             if (expand) {
                 user = _db.Users.AsNoTracking().Include(x => x.Terms).ThenInclude(x => x.Classes).ThenInclude(x => x.Exams)
                     .Include(x => x.Terms).ThenInclude(x => x.Classes).ThenInclude(x => x.Assignments)
-                    .Include(x => x.ScheduleItems)
                     .FirstOrDefault(u => u.UserId == id) ?? throw new ServiceException("User Does Not Exist");
                 user.Sleep = _db.Sleep.AsNoTracking().FirstOrDefault(s => s.UserId == id);
             }
@@ -75,7 +74,7 @@ namespace CollegeM8
             Login loginfound = _db.Logins.FirstOrDefault(l => l.Username == login.Username);
             if (loginfound != null && PasswordHash.Verify(login.Password, loginfound.Password))
             {
-                return GetUser(loginfound.UserId, true);
+                return GetUser(loginfound.UserId, false);
             }
             else
             {
