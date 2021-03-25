@@ -115,7 +115,7 @@ namespace CollegeM8
 
             // Remove old items from schedule
             ScheduleItem[] oldScheduleItems = _db.Schedule.Where(si => si.UserId == scheduleRequest.userId).ToArray();
-            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(scheduleRequest.startDate, scheduleRequest.endDate, si.StartTime, si.EndTime)).ToArray(); // Removes items that already exist during the scheduling time
+            oldScheduleItems = oldScheduleItems.Where(si => DateHelper.AnyDatesIntersect(scheduleRequest.startDate, scheduleRequest.endDate.AddDays(1), si.StartTime, si.EndTime)).ToArray(); // Removes items that already exist during the scheduling time
             _db.Schedule.RemoveRange(oldScheduleItems);
 
             // Add New items to schedule
