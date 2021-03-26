@@ -22,6 +22,8 @@ namespace CollegeM8
                 throw new ServiceException("Due date must be after release date.");
             }
             assignment.AssignmentId = Guid.NewGuid().ToString();
+            string termId = _db.Classes.FirstOrDefault(c => c.ClassId == assignment.ClassId).TermId;
+            assignment.TermId = termId;
             _db.Assignments.Add(assignment);
             _db.SaveChanges();
             return GetAssignment(assignment.AssignmentId);

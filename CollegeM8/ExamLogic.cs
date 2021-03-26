@@ -20,6 +20,8 @@ namespace CollegeM8
             Exam[] exams = _db.Exams.AsNoTracking().Where(e => e.UserId == exam.UserId).ToArray();
             if(!Exam.AnyExamsOverlap(exam, exams))
             {
+                string termId = _db.Classes.FirstOrDefault(c => c.ClassId == exam.ClassId).TermId;
+                exam.TermId = termId;
                 exam.ExamId = Guid.NewGuid().ToString();
                 _db.Exams.Add(exam);
                 _db.SaveChanges();
