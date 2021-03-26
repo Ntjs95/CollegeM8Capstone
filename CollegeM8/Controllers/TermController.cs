@@ -104,7 +104,7 @@ namespace CollegeM8.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Error deleting class. Check logs for details.");
+                return BadRequest("Error deleting term. Check logs for details.");
             }
         }
     }
