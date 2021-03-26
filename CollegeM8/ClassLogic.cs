@@ -25,6 +25,16 @@ namespace CollegeM8
 
         public bool DeleteClass(string id)
         {
+            Assignment[] assignments = _db.Assignments.Where(a => a.ClassId == id).ToArray();
+            if (assignments.Length > 0)
+            {
+                _db.Assignments.RemoveRange(assignments);
+            }
+            Exam[] exams = _db.Exams.Where(e => e.ClassId == id).ToArray();
+            if (exams.Length > 0)
+            {
+                _db.Exams.RemoveRange(exams);
+            }
             _db.Classes.Remove(_db.Classes.Find(id));
             _db.SaveChanges();
             return true;
