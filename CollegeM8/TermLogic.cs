@@ -34,6 +34,21 @@ namespace CollegeM8
 
         public bool DeleteTerm(string id)
         {
+            Assignment[] assignments = _db.Assignments.Where(a => a.TermId == id).ToArray();
+            if(assignments.Length > 0)
+            {
+                _db.Assignments.RemoveRange(assignments);
+            }
+            Exam[] exams = _db.Exams.Where(e => e.TermId == id).ToArray();
+            if(exams.Length > 0)
+            {
+                _db.Exams.RemoveRange(exams);
+            }
+            Class[] classes = _db.Classes.Where(c => c.TermId == id).ToArray();
+            if(classes.Length > 0)
+            {
+                _db.Classes.RemoveRange(classes);
+            }
             _db.Term.Remove(_db.Term.Find(id));
             _db.SaveChanges();
             return true;
