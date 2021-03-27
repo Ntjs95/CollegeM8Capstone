@@ -111,6 +111,10 @@ namespace CollegeM8
                                 assignmentItem.StartTime = freeTimeThisDayAcendingLength[i].Start;
                                 assignmentItem.EndTime = assignmentItem.StartTime.AddHours(assignmentLengthHours);
                                 isTimeFound = true;
+                                if(sleep == null)
+                                {
+                                    freeTimeThisDayAcendingLength[i].Start = freeTimeThisDayAcendingLength[i].Start.AddDays(1);
+                                }
                                 break;
                             }
                         }
