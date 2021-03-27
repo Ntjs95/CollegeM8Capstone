@@ -29,6 +29,13 @@ namespace CollegeM8
                 login.Password = PasswordHash.Hash(user.Password);
                 login.PasswordLastChangedDate = DateTime.Now;
                 user.Password = null;
+                Sleep sleep = new Sleep();
+                sleep.UserId = guid;
+                sleep.HoursWeekday = 8;
+                sleep.HoursWeekend = 8;
+                sleep.WakeTimeWeekday = DateTime.Parse("0001-01-01T07:00:00");
+                sleep.WakeTimeWeekend = DateTime.Parse("0001-01-01T07:00:00");
+                _db.Sleep.Add(sleep);
                 _db.Users.Add(user);
                 _db.Logins.Add(login);
                 _db.SaveChanges();

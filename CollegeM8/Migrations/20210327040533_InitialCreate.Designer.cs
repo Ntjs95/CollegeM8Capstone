@@ -10,16 +10,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CollegeM8.Migrations
 {
     [DbContext(typeof(CollegeM8Context))]
-    [Migration("20210213231620_ColumnNameFix")]
-    partial class ColumnNameFix
+    [Migration("20210327040533_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("CollegeM8.Assignment", b =>
                 {
@@ -27,7 +27,7 @@ namespace CollegeM8.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClassId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
@@ -48,6 +48,8 @@ namespace CollegeM8.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AssignmentId");
+
+                    b.HasIndex("ClassId");
 
                     b.ToTable("Assignments");
                 });
@@ -82,7 +84,7 @@ namespace CollegeM8.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("TermId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Thursday")
                         .HasColumnType("bit");
@@ -98,65 +100,9 @@ namespace CollegeM8.Migrations
 
                     b.HasKey("ClassId");
 
+                    b.HasIndex("TermId");
+
                     b.ToTable("Classes");
-                });
-
-            modelBuilder.Entity("CollegeM8.Event", b =>
-                {
-                    b.Property<string>("EventId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EventDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EventType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Friday")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("HoursCompletedSoFar")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HoursToCompleteTotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("Monday")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Saturday")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Sunday")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Thursday")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Tuesday")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Wednesday")
-                        .HasColumnType("bit");
-
-                    b.HasKey("EventId");
-
-                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("CollegeM8.Exam", b =>
@@ -165,10 +111,7 @@ namespace CollegeM8.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClassId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -183,6 +126,8 @@ namespace CollegeM8.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ExamId");
+
+                    b.HasIndex("ClassId");
 
                     b.ToTable("Exams");
                 });
@@ -202,9 +147,13 @@ namespace CollegeM8.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Username");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Logins");
                 });
@@ -224,9 +173,11 @@ namespace CollegeM8.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ScheduleItemId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Schedule");
                 });
@@ -265,9 +216,11 @@ namespace CollegeM8.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("TermId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Term");
                 });
@@ -301,6 +254,82 @@ namespace CollegeM8.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CollegeM8.Assignment", b =>
+                {
+                    b.HasOne("CollegeM8.Class", null)
+                        .WithMany("Assignments")
+                        .HasForeignKey("ClassId");
+                });
+
+            modelBuilder.Entity("CollegeM8.Class", b =>
+                {
+                    b.HasOne("CollegeM8.Term", null)
+                        .WithMany("Classes")
+                        .HasForeignKey("TermId");
+                });
+
+            modelBuilder.Entity("CollegeM8.Exam", b =>
+                {
+                    b.HasOne("CollegeM8.Class", null)
+                        .WithMany("Exams")
+                        .HasForeignKey("ClassId");
+                });
+
+            modelBuilder.Entity("CollegeM8.Login", b =>
+                {
+                    b.HasOne("CollegeM8.User", null)
+                        .WithOne("Login")
+                        .HasForeignKey("CollegeM8.Login", "UserId");
+                });
+
+            modelBuilder.Entity("CollegeM8.ScheduleItem", b =>
+                {
+                    b.HasOne("CollegeM8.User", null)
+                        .WithMany("ScheduleItems")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("CollegeM8.Sleep", b =>
+                {
+                    b.HasOne("CollegeM8.User", "User")
+                        .WithOne("Sleep")
+                        .HasForeignKey("CollegeM8.Sleep", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CollegeM8.Term", b =>
+                {
+                    b.HasOne("CollegeM8.User", null)
+                        .WithMany("Terms")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("CollegeM8.Class", b =>
+                {
+                    b.Navigation("Assignments");
+
+                    b.Navigation("Exams");
+                });
+
+            modelBuilder.Entity("CollegeM8.Term", b =>
+                {
+                    b.Navigation("Classes");
+                });
+
+            modelBuilder.Entity("CollegeM8.User", b =>
+                {
+                    b.Navigation("Login");
+
+                    b.Navigation("ScheduleItems");
+
+                    b.Navigation("Sleep");
+
+                    b.Navigation("Terms");
                 });
 #pragma warning restore 612, 618
         }
