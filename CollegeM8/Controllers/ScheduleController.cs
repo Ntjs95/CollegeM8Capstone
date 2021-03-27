@@ -47,9 +47,9 @@ namespace CollegeM8.Controllers
             {
                 return BadRequest(e.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest("Error creating sleep data. Check logs for details.");
+                return BadRequest("Error creating schedule data. Check logs for details.");
             }
         }
     }
