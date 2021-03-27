@@ -74,8 +74,11 @@ namespace CollegeM8
                 }
                 currentDate = currentDate.AddDays(1); // Increment while loop
             }
-            // Make Smart Adjustments
-            scheduleItems = ScheduleItem.AdjustSleepTimes(scheduleItems);
+            if (sleep != null)
+            {
+                // Make Smart Adjustments
+                scheduleItems = ScheduleItem.AdjustSleepTimes(scheduleItems);
+            }
 
             // Add assignments
             if (assignments != null)
@@ -92,7 +95,15 @@ namespace CollegeM8
                     {
                         bool isTimeFound = false;
                         double assignmentLengthHours = assignmentItem.EndTime.Subtract(assignmentItem.StartTime).TotalHours;
-                        List<DualDates> freeTimeThisDayAcendingLength = freeSpace.Where(s => DateHelper.IsSameDay(assignmentItem.StartTime, s.Start)).OrderBy(s => s.LengthHours()).ToList();
+                        List<DualDates> freeTimeThisDayAcendingLength;
+                        if (sleep != null)
+                        {
+                            freeTimeThisDayAcendingLength = freeSpace.Where(s => DateHelper.IsSameDay(assignmentItem.StartTime, s.Start)).OrderBy(s => s.LengthHours()).ToList();
+                        }
+                        else
+                        {
+                            freeTimeThisDayAcendingLength = freeSpace.Where(s => DateHelper.AnyDatesIntersect(assignmentItem.StartTime, assignmentItem.StartTime, s.Start, s.End)).OrderBy(s => s.LengthHours()).ToList();
+                        }
                         for (int i = 0; i < freeTimeThisDayAcendingLength.Count; i++)
                         {
                             if (freeTimeThisDayAcendingLength[i].LengthHours() >= assignmentLengthHours)

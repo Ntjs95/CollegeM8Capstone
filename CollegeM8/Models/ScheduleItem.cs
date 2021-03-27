@@ -55,7 +55,7 @@ namespace CollegeM8
                 {
                     DualDates dates = new DualDates();
                     dates.Start = schedule[i].EndTime;
-                    dates.End = schedule[i].StartTime;
+                    dates.End = schedule[i+1].StartTime;
                     freeSpace.Add(dates);
                 }
             }
