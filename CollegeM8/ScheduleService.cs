@@ -53,8 +53,11 @@ namespace CollegeM8
             while (currentDate <= scheduleRequest.endDate) 
             {
                 // Add Sleep
-                ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, currentDate, sleep);
-                scheduleItems.Add(sleepItem);
+                if (sleep != null)
+                {
+                    ScheduleItem sleepItem = ScheduleItem.CreateSleepScheduleItem(scheduleRequest.userId, currentDate, sleep);
+                    scheduleItems.Add(sleepItem);
+                }
                 // Add Classes
                 Term term = terms.FirstOrDefault(t => t.StartDate <= currentDate && currentDate <= t.EndDate); // Choose term that we are in today (since terms cannot overlap)
                 if (term != null && classes != null)
