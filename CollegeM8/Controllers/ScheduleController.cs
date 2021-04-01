@@ -47,7 +47,7 @@ namespace CollegeM8.Controllers
             {
                 return BadRequest(e.Message);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Error creating schedule data. Check logs for details.");
             }
