@@ -27,6 +27,7 @@ namespace CollegeM8
                 term.TermId = Guid.NewGuid().ToString();
                 _db.Term.Add(term);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, term).ConfigureAwait(false);
                 return GetTerm(term.TermId);
             }
             throw new ServiceException("Terms cannot overlap");
