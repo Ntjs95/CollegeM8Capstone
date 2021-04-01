@@ -65,7 +65,6 @@ namespace CollegeM8
             }
             else
             {
-                oldClass.TermId = newClass.TermId;
                 oldClass.CourseCode = newClass.CourseCode;
                 oldClass.ClassName = newClass.ClassName;
                 oldClass.StartTime = newClass.StartTime;
@@ -79,6 +78,7 @@ namespace CollegeM8
                 oldClass.Sunday = newClass.Sunday;
                 _db.Classes.Update(oldClass);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, oldClass.TermId).ConfigureAwait(false);
             }
             return GetClass(newClass.ClassId);
         }

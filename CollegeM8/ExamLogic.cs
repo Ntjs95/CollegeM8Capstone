@@ -62,11 +62,11 @@ namespace CollegeM8
             }
             else
             {
-                oldExam.ClassId = exam.ClassId;
                 oldExam.StartTime = exam.StartTime;
                 oldExam.EndTime = exam.EndTime;
                 _db.Exams.Update(oldExam);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, exam.TermId).ConfigureAwait(false);
             }
             return GetExam(exam.ExamId);
         }
