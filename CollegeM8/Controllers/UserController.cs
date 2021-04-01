@@ -102,7 +102,26 @@ namespace CollegeM8
             }
             catch (Exception)
             {
-                return BadRequest("Login Error. Check logs for details.");
+                return BadRequest("Password Error. Check logs for details.");
+            }
+        }
+
+        // GET api/User/5
+        [HttpGet("nextevent/{id}")]
+        public IActionResult GetNextEvent(string id)
+        {
+            try
+            {
+                NextEvent ev = _userLogic.GetNextEvent(id);
+                return Ok(ev);
+            }
+            catch (ServiceException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error getting next event. Check logs for details.");
             }
         }
     }

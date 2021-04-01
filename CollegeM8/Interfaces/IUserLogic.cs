@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CollegeM8
+﻿namespace CollegeM8
 {
     public interface IUserLogic
     {
@@ -12,5 +7,6 @@ namespace CollegeM8
         public User UpdateUser(User user);
         public User Login(Login login);
         public User ChangePassword(ChangePassword login);
+        public NextEvent GetNextEvent(string id);
     }
 }

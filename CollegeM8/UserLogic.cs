@@ -106,5 +106,43 @@ namespace CollegeM8
                 throw new ServiceException("Password Not Changed.");
             }
         }
+
+        public NextEvent GetNextEvent(string id)
+        {
+            NextEvent nextEvent;
+            string title;
+            string description;
+            string dateStr;
+            string timeStr;
+            Exam exam = _db.Exams.Where(e => e.UserId == id).OrderBy(e => e.StartTime).FirstOrDefault(e => e.StartTime >= DateTime.Now);
+            Assignment assignment = _db.Assignments.Where(a => a.UserId == id).OrderBy(a => a.DueDate).FirstOrDefault(a => a.DueDate >= DateTime.Now);
+            if(exam == null && assignment == null)
+            {
+                ScheduleItem item = _db.Schedule.Where(s => s.UserId == id).OrderBy(s => s.StartTime).FirstOrDefault(s => s.StartTime >= DateTime.Now);
+                title = item.Title;
+                timeStr = item.StartTime.ToString("hh:mm tt");
+                dateStr = item.StartTime.ToString("dddd, dd MMMM yyyy");
+                nextEvent = new NextEvent(title, null, dateStr, timeStr);
+            }
+            else if(exam == null)
+            {
+                Class _class = _db.Classes.FirstOrDefault(c => c.ClassId == assignment.ClassId);
+                title = $"Assignment Due Soon!";
+                description = $"The next assignment due for {_class.ClassName} is approaching. This assignment is worth {assignment.GradeWeight}% of your grade.";
+                dateStr = assignment.DueDate.ToString("dddd, dd MMMM yyyy");
+                nextEvent = new NextEvent(title, description, dateStr, null);
+            }
+            else
+            {
+                Class _class = _db.Classes.FirstOrDefault(c => c.ClassId == exam.ClassId);
+                title = $"Exam Soon!";
+                description = $"The exam for {_class.ClassName} is approaching!";
+                dateStr = exam.StartTime.ToString("dddd, dd MMMM yyyy");
+                timeStr = exam.StartTime.ToString("hh:mm tt");
+                nextEvent = new NextEvent(title, description, dateStr, timeStr);
+            }
+
+            return nextEvent;
+        }
     }
 }
