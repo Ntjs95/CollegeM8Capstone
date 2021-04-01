@@ -65,7 +65,6 @@ namespace CollegeM8
             }
             else
             {
-                oldClass.TermId = newClass.TermId;
                 oldClass.CourseCode = newClass.CourseCode;
                 oldClass.ClassName = newClass.ClassName;
                 oldClass.StartTime = newClass.StartTime;
