@@ -124,7 +124,7 @@ namespace CollegeM8
                 dateStr = item.StartTime.ToString("dddd, dd MMMM yyyy");
                 nextEvent = new NextEvent(title, null, dateStr, timeStr);
             }
-            else if(exam == null)
+            else if(exam == null || ((DateTime.Now - assignment.DueDate).TotalMinutes > (DateTime.Now - exam.StartTime).TotalMinutes))
             {
                 Class _class = _db.Classes.FirstOrDefault(c => c.ClassId == assignment.ClassId);
                 title = $"Assignment Due Soon!";
