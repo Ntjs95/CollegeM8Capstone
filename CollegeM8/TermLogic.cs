@@ -83,6 +83,7 @@ namespace CollegeM8
                 oldTerm.EndDate = term.EndDate;
                 _db.Term.Update(oldTerm);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, term).ConfigureAwait(false);
             }
             return GetTerm(term.TermId);
         }

@@ -72,6 +72,7 @@ namespace CollegeM8
 
                 _db.Assignments.Update(oldAssignment);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, oldAssignment.TermId).ConfigureAwait(false);
                 return GetAssignment(assignment.AssignmentId);
             }
         }

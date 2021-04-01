@@ -78,6 +78,7 @@ namespace CollegeM8
                 oldClass.Sunday = newClass.Sunday;
                 _db.Classes.Update(oldClass);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, oldClass.TermId).ConfigureAwait(false);
             }
             return GetClass(newClass.ClassId);
         }
