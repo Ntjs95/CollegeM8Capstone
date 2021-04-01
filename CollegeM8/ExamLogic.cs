@@ -66,7 +66,7 @@ namespace CollegeM8
                 oldExam.EndTime = exam.EndTime;
                 _db.Exams.Update(oldExam);
                 _db.SaveChanges();
-                Schedule.UpdateSchedule(_db, exam.TermId).ConfigureAwait(false);
+                Schedule.UpdateSchedule(_db, oldExam.TermId).ConfigureAwait(false);
             }
             return GetExam(exam.ExamId);
         }
