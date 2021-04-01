@@ -20,6 +20,7 @@ namespace CollegeM8
             _class.ClassId = Guid.NewGuid().ToString();
             _db.Classes.Add(_class);
             _db.SaveChanges();
+            Schedule.UpdateSchedule(_db, _class.TermId).ConfigureAwait(false);
             return GetClass(_class.ClassId);
         }
 

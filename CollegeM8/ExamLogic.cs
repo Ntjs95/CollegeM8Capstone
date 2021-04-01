@@ -25,6 +25,7 @@ namespace CollegeM8
                 exam.ExamId = Guid.NewGuid().ToString();
                 _db.Exams.Add(exam);
                 _db.SaveChanges();
+                Schedule.UpdateSchedule(_db, exam.TermId).ConfigureAwait(false);
                 return GetExam(exam.ExamId);
             }
             throw new ServiceException("Exam times cannot overlap.");

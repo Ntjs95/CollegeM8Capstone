@@ -26,6 +26,7 @@ namespace CollegeM8
             assignment.TermId = termId;
             _db.Assignments.Add(assignment);
             _db.SaveChanges();
+            Schedule.UpdateSchedule(_db, assignment.TermId).ConfigureAwait(false);
             return GetAssignment(assignment.AssignmentId);
         }
 
