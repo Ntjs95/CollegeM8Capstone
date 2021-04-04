@@ -27,8 +27,9 @@ namespace CollegeM8
                 term.TermId = Guid.NewGuid().ToString();
                 _db.Term.Add(term);
                 _db.SaveChanges();
+                Term returnTerm = GetTerm(term.TermId); 
                 Schedule.UpdateSchedule(_db, term).ConfigureAwait(false);
-                return GetTerm(term.TermId);
+                return returnTerm;
             }
             throw new ServiceException("Terms cannot overlap");
         }
@@ -72,6 +73,7 @@ namespace CollegeM8
 
         public Term UpdateTerm(Term term)
         {
+            Term returnTerm;
             Term oldTerm = _db.Term.FirstOrDefault(t => t.TermId == term.TermId);
             if(oldTerm == null)
             {
@@ -83,9 +85,10 @@ namespace CollegeM8
                 oldTerm.EndDate = term.EndDate;
                 _db.Term.Update(oldTerm);
                 _db.SaveChanges();
+                returnTerm = GetTerm(term.TermId);
                 Schedule.UpdateSchedule(_db, term).ConfigureAwait(false);
             }
-            return GetTerm(term.TermId);
+            return returnTerm;
         }
     }
 }
