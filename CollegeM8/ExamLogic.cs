@@ -25,8 +25,9 @@ namespace CollegeM8
                 exam.ExamId = Guid.NewGuid().ToString();
                 _db.Exams.Add(exam);
                 _db.SaveChanges();
+                Exam returnExam = GetExam(exam.ExamId);
                 Schedule.UpdateSchedule(_db, exam.TermId).ConfigureAwait(false);
-                return GetExam(exam.ExamId);
+                return returnExam;
             }
             throw new ServiceException("Exam times cannot overlap.");
         }
@@ -55,6 +56,7 @@ namespace CollegeM8
 
         public Exam UpdateExam(Exam exam)
         {
+            Exam returnExam;
             Exam oldExam = _db.Exams.FirstOrDefault(e => e.ExamId == exam.ExamId);
             if(oldExam == null)
             {
@@ -66,9 +68,10 @@ namespace CollegeM8
                 oldExam.EndTime = exam.EndTime;
                 _db.Exams.Update(oldExam);
                 _db.SaveChanges();
+                returnExam = GetExam(exam.ExamId);
                 Schedule.UpdateSchedule(_db, oldExam.TermId).ConfigureAwait(false);
             }
-            return GetExam(exam.ExamId);
+            return returnExam;
         }
     }
 }

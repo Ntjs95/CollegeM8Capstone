@@ -20,8 +20,9 @@ namespace CollegeM8
             _class.ClassId = Guid.NewGuid().ToString();
             _db.Classes.Add(_class);
             _db.SaveChanges();
+            Class returnClass = GetClass(_class.ClassId);
             Schedule.UpdateSchedule(_db, _class.TermId).ConfigureAwait(false);
-            return GetClass(_class.ClassId);
+            return returnClass;
         }
 
         public bool DeleteClass(string id)
@@ -58,6 +59,7 @@ namespace CollegeM8
 
         public Class UpdateClass(Class newClass)
         {
+            Class returnClass;
             Class oldClass = _db.Classes.FirstOrDefault(c => c.ClassId == newClass.ClassId);
             if(oldClass == null)
             {
@@ -78,9 +80,10 @@ namespace CollegeM8
                 oldClass.Sunday = newClass.Sunday;
                 _db.Classes.Update(oldClass);
                 _db.SaveChanges();
+                returnClass = GetClass(newClass.ClassId);
                 Schedule.UpdateSchedule(_db, oldClass.TermId).ConfigureAwait(false);
             }
-            return GetClass(newClass.ClassId);
+            return returnClass;
         }
     }
 }

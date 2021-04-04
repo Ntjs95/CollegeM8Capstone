@@ -26,8 +26,9 @@ namespace CollegeM8
             assignment.TermId = termId;
             _db.Assignments.Add(assignment);
             _db.SaveChanges();
+            Assignment returnAssignment = GetAssignment(assignment.AssignmentId);
             Schedule.UpdateSchedule(_db, assignment.TermId).ConfigureAwait(false);
-            return GetAssignment(assignment.AssignmentId);
+            return returnAssignment;
         }
 
         public bool DeleteAssignment(string id)
@@ -55,6 +56,7 @@ namespace CollegeM8
 
         public Assignment UpdateAssignment(Assignment assignment)
         {
+            Assignment returnAssignment;
             Assignment oldAssignment = _db.Assignments.FirstOrDefault(a => a.AssignmentId == assignment.AssignmentId);
             if(assignment == null)
             {
@@ -72,8 +74,9 @@ namespace CollegeM8
 
                 _db.Assignments.Update(oldAssignment);
                 _db.SaveChanges();
+                returnAssignment = GetAssignment(assignment.AssignmentId);
                 Schedule.UpdateSchedule(_db, oldAssignment.TermId).ConfigureAwait(false);
-                return GetAssignment(assignment.AssignmentId);
+                return returnAssignment;
             }
         }
     }
