@@ -119,7 +119,7 @@ namespace CollegeM8
             if(exam == null && assignment == null)
             {
                 ScheduleItem item = _db.Schedule.Where(s => s.UserId == id).OrderBy(s => s.StartTime).FirstOrDefault(s => s.StartTime >= DateTime.Now);
-                title = item.Title;
+                title = "Sleep";
                 timeStr = item.StartTime.ToString("hh:mm tt");
                 dateStr = item.StartTime.ToString("dddd, dd MMMM yyyy");
                 nextEvent = new NextEvent(title, null, dateStr, timeStr);
@@ -130,7 +130,7 @@ namespace CollegeM8
                 title = $"Assignment Due Soon!";
                 description = $"The next assignment due for {_class.ClassName} is approaching. This assignment is worth {assignment.GradeWeight}% of your grade.";
                 dateStr = assignment.DueDate.ToString("dddd, dd MMMM yyyy");
-                nextEvent = new NextEvent(title, description, dateStr, null);
+                nextEvent = new NextEvent(title, description, dateStr, "11:59 PM");
             }
             else
             {
