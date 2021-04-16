@@ -16,6 +16,8 @@
 
 Success Response `200 OK`
 
+Examples:
+
 `GET /api/User/877c19c4-b387-40a8-af8e-00523c2c7ede`
 
 ```json
@@ -24,14 +26,14 @@ Success Response `200 OK`
   "username": "JDUsername",
   "firstName": "John",
   "lastName": "Dough",
-  "schoolName": "SChool Name",
+  "schoolName": "School Name",
   "programName": "Program Name",
   "emailAddress": "email@domain.com",
   "birthDate": "2000-01-01T00:00:00"
 }
 ```
 
-`/api/User/877c19c4-b387-40a8-af8e-00523c2c7ede?expand=true`
+`GET /api/User/877c19c4-b387-40a8-af8e-00523c2c7ede?expand=true`
 
 ```json
 {
@@ -39,7 +41,7 @@ Success Response `200 OK`
   "username": "JDUsername",
   "firstName": "John",
   "lastName": "Dough",
-  "schoolName": "SChool Name",
+  "schoolName": "School Name",
   "programName": "Program Name",
   "emailAddress": "email@domain.com",
   "birthDate": "2000-01-01T00:00:00",
@@ -103,8 +105,9 @@ Success Response `200 OK`
 
 Error Response `400 Bad Request`
 
-`User Does Not Exist`
-
+```
+User Does Not Exist
+```
 
 ### POST
 
@@ -115,15 +118,36 @@ Error Response `400 Bad Request`
 ```json
 {
   "username": "JDUsername",
+  "password": "12345678",
   "firstName": "John",
   "lastName": "Dough",
-  "schoolName": "SChool Name",
+  "schoolName": "School Name",
   "programName": "Program Name",
   "emailAddress": "email@domain.com",
   "birthDate": "2000-01-01T00:00:00"
 }
 ```
 
+Success Response `200 OK`
+
 Response structure:
 
-`GET /api/User/877c19c4-b387-40a8-af8e-00523c2c7ede`
+`POST /api/User`
+
+```json
+{
+  "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
+  "username": "JDUsername",
+  "firstName": "John",
+  "lastName": "Dough",
+  "schoolName": "School Name",
+  "programName": "Program Name",
+  "emailAddress": "email@domain.com",
+  "birthDate": "2000-01-01T00:00:00"
+}
+```
+
+Error Response `400 Bad Request`
+
+```User Already Exists```
+
