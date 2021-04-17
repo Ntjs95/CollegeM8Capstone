@@ -2,7 +2,7 @@
 
 ## User Endpoint
 
-### GET
+### GET User
 
 `GET /api/User/{id}`
 
@@ -109,7 +109,7 @@ Error Response `400 Bad Request`
 User Does Not Exist
 ```
 
-### POST
+### POST User
 
 `POST/api/User`
 
@@ -147,9 +147,9 @@ Response structure:
 
 Error Response `400 Bad Request`
 
-```User Already Exists```
+`User Already Exists`
 
-### PUT
+### PUT User
 
 `PUT /api/User`
 
@@ -187,9 +187,82 @@ Response structure:
 
 Error Response `400 Bad Request`
 
-### DELETE
+### POST User Login
 
-`DELETE /api/User/{id}`
+`POST /api/User/Login`
+
+**Required Body Data:**
+
+```json
+{
+  "username": "JDUsername",
+  "password": "1235678"
+}
+```
+
+Success Response `200 OK`
+
+Examples:
+
+`POST /api/User/Login`
+
+```json
+{
+  "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
+  "username": "JDUsername",
+  "firstName": "John",
+  "lastName": "Dough",
+  "schoolName": "School Name",
+  "programName": "Program Name",
+  "emailAddress": "email@domain.com",
+  "birthDate": "2000-01-01T00:00:00"
+}
+```
+
+Error Response `400 Bad Request`
+
+`Login attempt failed`
+
+### POST User Password Change
+
+`POST /api/User/ChangePassword`
+
+**Required Body Data:**
+
+```json
+{
+  "username": "JDUsername",
+  "oldPassword": "12345678",
+  "newPassword": "ABCDEFGH"
+}
+```
+
+Success Response `200 OK`
+
+Examples:
+
+`POST /api/User`
+
+```json
+{
+  "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
+  "username": "JDUsername",
+  "firstName": "John",
+  "lastName": "Dough",
+  "schoolName": "School Name",
+  "programName": "Program Name",
+  "emailAddress": "email@domain.com",
+  "birthDate": "2000-01-01T00:00:00"
+}
+```
+
+Error Response `400 Bad Request`
+
+`Login attempt failed`
+
+### GET User's Next Event
+
+`GET /api/User/NextEvent/{id}`
 
 **Required:**
 
@@ -197,9 +270,83 @@ Error Response `400 Bad Request`
 
 Success Response `200 OK`
 
-Response structure:
+Examples:
 
-```true```
+`GET /api/User/NextEvent/877c19c4-b387-40a8-af8e-00523c2c7ede`
+
+```json
+{
+  "title": "Exam Soon!",
+  "description": "The exam for Macro-Economics is approaching!",
+  "dateStr": "Saturday, 17 April 2021",
+  "timeStr": "08:30 AM"
+}
+```
+
+---
+
+## Sleep Endpoint
+
+### GET Sleep
+
+`GET /api/Sleep/{userId}`
+
+**Required:**
+
+`userId=[guid]`
+
+Success Response `200 OK`
+
+Examples:
+
+`GET /api/Sleep/877c19c4-b387-40a8-af8e-00523c2c7ede`
+
+```json
+{
+    "userId": "877c19c4-b387-40a8-af8e-00523c2c4ede",
+    "hoursWeekday": 10,
+    "hoursWeekend": 9,
+    "wakeTimeWeekday": "0001-01-01T06:30:00",
+    "wakeTimeWeekend": "0001-01-01T07:45:00"
+}
+```
 
 Error Response `400 Bad Request`
 
+```
+No sleep data found for this user
+```
+
+### PUT Sleep
+
+`PUT /api/Sleep`
+
+**Required Body Data:**
+
+```json
+{
+    "userId": "877c19c4-b387-40a8-af8e-00523c2c4ede",
+    "hoursWeekday": 10,
+    "hoursWeekend": 9,
+    "wakeTimeWeekday": "0001-01-01T06:30:00",
+    "wakeTimeWeekend": "0001-01-01T07:45:00"
+}
+```
+
+Success Response `200 OK`
+
+Response structure:
+
+```json
+{
+    "userId": "877c19c4-b387-40a8-af8e-00523c2c4ede",
+    "hoursWeekday": 10,
+    "hoursWeekend": 9,
+    "wakeTimeWeekday": "0001-01-01T06:30:00",
+    "wakeTimeWeekend": "0001-01-01T07:45:00"
+}
+```
+
+Error Response `400 Bad Request`
+
+`No sleep data found for this user.`
