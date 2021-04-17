@@ -132,8 +132,6 @@ Success Response `200 OK`
 
 Response structure:
 
-`POST /api/User`
-
 ```json
 {
   "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
@@ -150,4 +148,58 @@ Response structure:
 Error Response `400 Bad Request`
 
 ```User Already Exists```
+
+### PUT
+
+`PUT /api/User`
+
+**Required Body Data:**
+
+```json
+{
+  "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
+  "username": "JDUsername",
+  "firstName": "John2",
+  "lastName": "Dough",
+  "schoolName": "School Name",
+  "programName": "Program Name",
+  "emailAddress": "email@domain.com",
+  "birthDate": "2000-01-01T00:00:00"
+}
+```
+
+Success Response `200 OK`
+
+Response structure:
+
+```json
+{
+  "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
+  "username": "JDUsername",
+  "firstName": "John2",
+  "lastName": "Dough",
+  "schoolName": "School Name",
+  "programName": "Program Name",
+  "emailAddress": "email@domain.com",
+  "birthDate": "2000-01-01T00:00:00"
+}
+```
+
+Error Response `400 Bad Request`
+
+### DELETE
+
+`DELETE /api/User/{id}`
+
+**Required:**
+
+`id=[guid]`
+
+Success Response `200 OK`
+
+Response structure:
+
+```true```
+
+Error Response `400 Bad Request`
 
