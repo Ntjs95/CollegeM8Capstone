@@ -1,20 +1,56 @@
 # CollegeM8
 
-## User Endpoint
+This project is a student made scheduling AI. The API was designed to interact with the CollegeM8 front end. 
 
-`GET /api/User/{id}`
+[View Frontend Deployment](https://mk519.github.io/projectdev2021/login.html)
 
-Response structure:
 
-```json
-{
-    "userId": "877c19c4-b387-40a8-af8e-00523c2c7ede",
-    "username": "JDUsername",
-    "firstName": "John",
-    "lastName": "Dough",
-    "schoolName": "SChool Name",
-    "programName": "Program Name",
-    "emailAddress": "email@domain.com",
-    "birthDate": "2000-01-01T00:00:00"
-}
-```
+## Endpoints
+
+### User
+
+User Endpoint: `/api/User`
+
+[User endpoint documentation](UserEndpoint.md)
+
+### Sleep
+
+Sleep Endpoint: `/api/Sleep`
+
+[Sleep endpoint documentation](SleepEndpoint.md)
+
+### Term
+
+Term Endpoint: `/api/Term`
+
+[Term endpoint documentation](TermEndpoint.md)
+
+### Class
+
+Class Endpoint: `/api/Class`
+
+[Class endpoint documentation](ClassEndpoint.md)
+
+### Assignment
+
+Assignment Endpoint: `/api/Assignment`
+
+[Assignment endpoint documentation](AssignmentEndpoint.md)
+
+### Exam
+
+Exam Endpoint: `/api/Exam`
+
+[Exam endpoint documentation](ExamEndpoint.md)
+
+### ScheduleItem
+
+ScheduleItem Endpoint: `/api/ScheduleItem`
+
+[ScheduleItem endpoint documentation](ScheduleItemEndpoint.md)
+
+### Schedule
+
+Schedule Endpoint: `/api/Schedule`
+
+[Schedule endpoint documentation](ScheduleEndpoint.md)
