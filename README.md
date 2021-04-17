@@ -11,46 +11,46 @@ This project is a student made scheduling AI. The API was designed to interact w
 
 User Endpoint: `/api/User`
 
-[User endpoint documentation](UserEndpoint.md)
+[User endpoint documentation](EndpointDocs/UserEndpoint.md)
 
 ### Sleep
 
 Sleep Endpoint: `/api/Sleep`
 
-[Sleep endpoint documentation](SleepEndpoint.md)
+[Sleep endpoint documentation](EndpointDocs/SleepEndpoint.md)
 
 ### Term
 
 Term Endpoint: `/api/Term`
 
-[Term endpoint documentation](TermEndpoint.md)
+[Term endpoint documentation](EndpointDocs/TermEndpoint.md)
 
 ### Class
 
 Class Endpoint: `/api/Class`
 
-[Class endpoint documentation](ClassEndpoint.md)
+[Class endpoint documentation](EndpointDocs/ClassEndpoint.md)
 
 ### Assignment
 
 Assignment Endpoint: `/api/Assignment`
 
-[Assignment endpoint documentation](AssignmentEndpoint.md)
+[Assignment endpoint documentation](EndpointDocs/AssignmentEndpoint.md)
 
 ### Exam
 
 Exam Endpoint: `/api/Exam`
 
-[Exam endpoint documentation](ExamEndpoint.md)
+[Exam endpoint documentation](EndpointDocs/ExamEndpoint.md)
 
 ### ScheduleItem
 
 ScheduleItem Endpoint: `/api/ScheduleItem`
 
-[ScheduleItem endpoint documentation](ScheduleItemEndpoint.md)
+[ScheduleItem endpoint documentation](EndpointDocs/ScheduleItemEndpoint.md)
 
 ### Schedule
 
 Schedule Endpoint: `/api/Schedule`
 
-[Schedule endpoint documentation](ScheduleEndpoint.md)
+[Schedule endpoint documentation](EndpointDocs/ScheduleEndpoint.md)
